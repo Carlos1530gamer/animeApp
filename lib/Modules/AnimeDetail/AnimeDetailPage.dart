@@ -13,13 +13,33 @@ class AnimeDetailPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text(anime.title),
-        backgroundColor: AppColors.appBar,
+      body: NestedScrollView(
+        headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {
+          return <Widget>[
+            SliverAppBar(
+              expandedHeight: 200,
+              floating: false,
+              pinned: true,
+              flexibleSpace: FlexibleSpaceBar(
+                centerTitle: true,
+                title: Text(anime.title,
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontStyle: FontStyle.italic,
+                    fontSize: 20.0
+                  ),
+                ),
+                background: Image.network(anime.imageUrl,
+                  fit: BoxFit.cover,
+                ),
+              ),
+            )
+          ];
+        },
+        body: DetailView(
+          anime: anime,
+        ),
       ),
-
-      body: DetailView(anime: anime),
-
       backgroundColor: AppColors.backroudApp,
     );
   }
@@ -47,7 +67,7 @@ class _DetailViewState extends State<DetailView> {
     super.initState();
     network.getInfoForAnime(anime.animeId, (data){
       setState(() {
-        _animeDetail = AnimeDetail.fromMap(data); 
+        _animeDetail = AnimeDetail.fromMap(data);
       });
     });
   }
@@ -56,11 +76,7 @@ class _DetailViewState extends State<DetailView> {
   Widget build(BuildContext context) {
     return Column(
       children: <Widget>[
-        FadeInImage.assetNetwork(
-          fadeInCurve: Curves.slowMiddle,
-          placeholder: "assets/images/Rolling-1s-200px.gif",
-          image: _animeDetail != null ? _animeDetail.imageUrl : "assets/images/Rolling-1s-200px.gif",
-        )
+
       ],
     );
   }
