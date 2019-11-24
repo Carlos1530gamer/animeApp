@@ -1,20 +1,21 @@
+import 'package:anime_chauteco/Modules/AnimeDetail/AnimeDetail.dart';
 import 'package:anime_chauteco/Modules/AnimeDetail/AnimeDetailPage.dart';
 import 'package:anime_chauteco/Modules/Home/RecomendAnimeRow.dart';
 import 'package:anime_chauteco/Modules/Network/Network.dart';
 import 'package:anime_chauteco/Modules/Utils/AppColors.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'Anime.dart';
 import 'HomePageConstans.dart';
 
 final constants = HomePageConstants.instance;
 class HomePage extends StatelessWidget {
-  //var _recomendAnimes = List<Anime>();
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(constants.tittle),
+        title: Text(constants.tittle, style: TextStyle(color: Colors.white)),
         backgroundColor: AppColors.appBar,
       ),
 
@@ -56,27 +57,34 @@ class _RecomendAnimeListState extends State<RecomendAnimeList> {
     return Center(
       child: Container(
         height: screenSzie.height,
-        width: screenSzie.width - 50.0,
-        child: ListView.separated(
-          separatorBuilder: (context,index) => Divider(color: Colors.transparent),
+        width: screenSzie.width,
+        child: StaggeredGridView.countBuilder(
           itemCount: _recomedAnimeList.length,
-          itemBuilder: (context, index){
-            return GestureDetector(
-              child: RecomendAnimeRow(anime: _recomedAnimeList[index]),
-              onTap: (){
-                Navigator.of(context).push(
-                  MaterialPageRoute(
-                    builder: (context){
-                      return AnimeDetailPage(anime: _recomedAnimeList[index]);
-                    }
-                  )
-                );
-              },
-            );
-          },
+          crossAxisCount: 4,
+          mainAxisSpacing: 4.0,
+          crossAxisSpacing: 4.0,
+          itemBuilder: (context, index) => GestureDetector(
+            child: RecomendAnimeRow(anime: _recomedAnimeList[index]),
+            onTap: () async {
+              AnimeDetail _animeDetail;
+
+              await network.getInfoForAnime(_recomedAnimeList[index].animeId, (data){
+                 _animeDetail = AnimeDetail.fromMap(data);
+              });
+
+              Navigator.of(context).push(
+                MaterialPageRoute(
+                  builder: (context) {
+                    return AnimeDetailPage(anime: _recomedAnimeList[index], animeDetail: _animeDetail);
+                  }
+                )
+              );
+            },
+          ),
+          staggeredTileBuilder: (index) => StaggeredTile.count(2, index.isEven ? 4 : 3),
           controller: _controller,
-        ),
-      ),
+        )
+      )
     );
   }
 

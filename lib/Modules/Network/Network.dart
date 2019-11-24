@@ -16,7 +16,7 @@ class Network {
     completion(data);
   }
 
-  void getInfoForAnime(int animeId, Function completion(data)) async {
+  Future<void> getInfoForAnime(int animeId, Future<Function> completion(data)) async {
     final newUrl = urlBase + "/anime/" + animeId.toString();
 
     http.Response response = await http.get(newUrl);

@@ -1,14 +1,38 @@
+import 'dart:ffi';
+
 import 'package:anime_chauteco/Modules/AnimeDetail/AnimeDetail.dart';
 import 'package:anime_chauteco/Modules/AnimeDetail/AnimeDetail.dart';
 import 'package:anime_chauteco/Modules/Home/Anime.dart';
-import 'package:anime_chauteco/Modules/Network/Network.dart';
 import 'package:anime_chauteco/Modules/Utils/AppColors.dart';
 import 'package:flutter/material.dart';
+import 'package:transparent_image/transparent_image.dart';
 
-class AnimeDetailPage extends StatelessWidget {
-  Anime anime;
+class AnimeDetailPage extends StatefulWidget {
 
-  AnimeDetailPage({Key key, @required this.anime}) : super(key: key);
+  final Anime anime;
+  final AnimeDetail animeDetail;
+
+  AnimeDetailPage({Key key, @required this.anime, @required this.animeDetail}) : super(key: key);
+
+  @override
+  State<StatefulWidget> createState() {
+    return _AnimeDetailPageState(anime: anime, animeDetail: animeDetail);
+  }
+  
+}
+
+class _AnimeDetailPageState extends State<AnimeDetailPage> {
+
+  final Anime anime;
+  AnimeDetail animeDetail;
+
+  _AnimeDetailPageState({Key key, @required this.anime, @required this.animeDetail}) : super();
+
+  @override
+  Void initState() {
+    // TODO: implement initState
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -29,15 +53,17 @@ class AnimeDetailPage extends StatelessWidget {
                     fontSize: 20.0
                   ),
                 ),
-                background: Image.network(anime.imageUrl,
+                background: FadeInImage.memoryNetwork(
+                  image: animeDetail.imageUrl,
+                  placeholder: kTransparentImage,
                   fit: BoxFit.cover,
-                ),
+                )
               ),
             )
           ];
         },
         body: DetailView(
-          anime: anime,
+          animeDetail: animeDetail,
         ),
       ),
       backgroundColor: AppColors.backroudApp,
@@ -46,30 +72,23 @@ class AnimeDetailPage extends StatelessWidget {
 }
 
 class DetailView extends StatefulWidget {
-  final Anime anime;
+  final AnimeDetail animeDetail;
 
-  DetailView({Key key, @required this.anime}) : super(key: key);
+  DetailView({Key key, @required this.animeDetail}) : super(key: key);
 
   @override
-  _DetailViewState createState() => _DetailViewState(anime: anime);
+  _DetailViewState createState() => _DetailViewState(animeDetail: animeDetail);
 }
 
 class _DetailViewState extends State<DetailView> {
-  final network = Network.instance;
-  final Anime anime;
-  AnimeDetail _animeDetail;
+  AnimeDetail animeDetail;
 
-  _DetailViewState({Key key, @required this.anime}) : super();
+  _DetailViewState({Key key, @required this.animeDetail}) : super();
 
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
-    network.getInfoForAnime(anime.animeId, (data){
-      setState(() {
-        _animeDetail = AnimeDetail.fromMap(data);
-      });
-    });
   }
 
   @override

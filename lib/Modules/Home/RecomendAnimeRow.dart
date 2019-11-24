@@ -1,5 +1,6 @@
 import 'package:anime_chauteco/Modules/Home/Anime.dart';
 import 'package:anime_chauteco/Modules/Utils/AppColors.dart';
+import 'package:flutter/cupertino.dart';
 import 'HomePageConstans.dart';
 import 'package:flutter/material.dart';
 
@@ -13,33 +14,24 @@ class RecomendAnimeRow extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final screenSize = MediaQuery.of(context).size;
-    final radius = Radius.circular(40.0);
+    final radius = Radius.circular(10.0);
     return Container(
-      height: screenSize.height / 2,
+      width: screenSize.width,
+      height: screenSize.height,
       decoration: BoxDecoration(
-        color: AppColors.purple,
-        borderRadius: BorderRadius.only(
-          topLeft: radius,
-          topRight: radius,
-          bottomLeft: radius,
-          bottomRight: radius
-        ),
-        image: DecorationImage(
-          fit: BoxFit.fill,
-          image: NetworkImage(anime.imageUrl),
-        ),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: <Widget>[
-          ScoreView(
-            score: anime.score.toString(),
-            animeType: anime.animeType,
-          ),
-          TittleAnimeRow(animeTittle: anime.title),
+        borderRadius: BorderRadius.all(radius),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black,
+            blurRadius: 10.0
+          )
         ],
-      ),
+        shape: BoxShape.rectangle,
+        image: DecorationImage(
+          image: NetworkImage(anime.imageUrl),
+          fit: BoxFit.fill
+        )
+      )
     );
   }
 }
@@ -63,8 +55,6 @@ class TittleAnimeRow extends StatelessWidget {
             bottomRight: _radius,
           )
         ),
-        height: 80.0,
-        width: size.width,
         child: Center(
           child: Padding(
             padding: const EdgeInsets.all(8.0),
@@ -94,7 +84,6 @@ class ScoreView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: 60.0,
       color: Colors.transparent,
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
